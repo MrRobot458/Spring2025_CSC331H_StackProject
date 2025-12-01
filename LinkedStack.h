@@ -1,5 +1,7 @@
 /*
-Purpose: This is the header file for a Linked List implementation of a Stack class.
+Purpose:
+    This is the header file for a Linked List implementation of a Stack class. The C++ language standard is C++20.
+
 Input: None
 Output: None
 */
@@ -21,9 +23,9 @@ struct Node {
 template <typename T>
 class LinkedStack {
 private:
-    Node<T>* top;
+    Node<T>* top;  // Pointer to the node at the top of the stack
 
-    // Copies another stack into this one
+    // Copies another stack
     void copy(const LinkedStack<T>&);
 
     // Deletes the entire stack
