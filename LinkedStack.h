@@ -38,6 +38,9 @@ public:
     // Copy constructor
     LinkedStack(const LinkedStack<T>&);
 
+    // Destructor
+    ~LinkedStack();
+
     // Overloads the assignment operator (=)
     const LinkedStack<T>& operator=(const LinkedStack<T>&);
 
@@ -52,9 +55,6 @@ public:
 
     // Deletes the item at the top of the stack
     void pop();
-
-    // Destructor
-    ~LinkedStack();
 };
 
 #endif
