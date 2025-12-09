@@ -2,14 +2,14 @@
 Purpose:
     This is the header file for a Linked List implementation of a Stack class. The C++ language standard is C++20.
 
-Input: None
-Output: None
+Input: None.
+Output: None.
 */
 
 #ifndef LINKED_STACK_H
 #define LINKED_STACK_H
 
-// Node struct definition for nodes
+//---- Node struct definition ----//
 template <typename T>
 struct Node {
     T info;         // Stores the data contained in the node
@@ -19,7 +19,7 @@ struct Node {
     Node(const T& item, Node<T>* nextNode = nullptr) : info(item), next(nextNode) { }
 };
 
-// LinkedStack class declaration
+//---- LinkedStack class declaration ----//
 template <typename T>
 class LinkedStack {
 private:
