@@ -94,11 +94,11 @@ void displayAbout() {
 
 // Displays the menu and gets the user's choice
 void displayMenu(int& choice) {
-    cout << "\n***************** MENU *****************\n"
-        << "1. Evaluate a mathematical expression.\n"
-        << "2. About.\n"
-        << "3. Quit the program.\n"
-        << "****************************************\n";
+    cout << "\n****************** MENU ******************\n"
+        << "  1. Evaluate a mathematical expression.\n"
+        << "  2. About.\n"
+        << "  3. Quit the program.\n"
+        << "******************************************\n";
 
     cout << "\nPick a number. Enter your choice here: ";
     cin >> choice;
@@ -158,7 +158,7 @@ double evaluateExpr(LinkedStack<double>& values, LinkedStack<char>& operators, b
             while (isspace(cin.peek())) cin.ignore();
 
             // Check for negation and invalid parentheses
-            temp = cin.peek();
+            temp = char(cin.peek());
 
             if (temp == '-') {
                 negationFlag = true;
@@ -179,7 +179,7 @@ double evaluateExpr(LinkedStack<double>& values, LinkedStack<char>& operators, b
             // Remove spaces and check for implicit multiplication
             while (isspace(cin.peek())) cin.ignore();
 
-            temp = cin.peek();
+            temp = char(cin.peek());
             if ((temp == '(') || isdigit(temp)) cin.putback('*');
         }
         else if (isOperator(current)) {
@@ -202,7 +202,7 @@ double evaluateExpr(LinkedStack<double>& values, LinkedStack<char>& operators, b
             // Remove spaces and check for invalid operator sequencing
             while (isspace(cin.peek())) cin.ignore();
 
-            temp = cin.peek();
+            temp = char(cin.peek());
             if (isOperator(temp) || (temp == ')')) {
                 errorFlag = true;
                 errorMsg = "Invalid operator sequencing.";

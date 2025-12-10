@@ -108,3 +108,8 @@ void LinkedStack<T>::pop() {
     }
     return;
 }
+
+//---- Declarations to prevent unresolved external symbol(s) linker error (LNK2019) ----//
+template class LinkedStack<double>;
+template class LinkedStack<int>;
+template class LinkedStack<char>;
