@@ -1,7 +1,7 @@
 /*
 Purpose:
     This is a menu-driven program that prompts a user for a valid mathematical expression, evaluates it using two
-    linked-list-implemented stacks, and displays the result.
+    linked-list-implemented stacks, and displays the result. One stack is for operands, the other for operators.
 
 Input:
     1. The user's choice from the program's menu options.
@@ -14,6 +14,7 @@ Output:
 
 #include "LinkedStack.h"
 #include <iostream>
+#include <string>
 #include <limits>
 
 using namespace std;
@@ -24,18 +25,15 @@ void displayAbout();                                                     // Disp
 void displayMenu(int&);                                                  // Displays the menu and gets the user's choice
 double evaluateExpr(LinkedStack<double>&, LinkedStack<char>&, bool&);    // Evaluates a given mathematical expression using two stacks
 int getPrecedence(char);                                                 // Returns a given operator's precedence
-void handleNegation();                                                   // Handles necessary negation when the current character is a minus sign
-bool isOperator(char);                                                   // Returns true if a given character is a mathematical operator, false otherwise
-void trimSpaces();                                                       // Reads and discards continuous blank spaces
-
+bool isOperator(char);                                                   // Returns true if a given character is an arithmetic operator, false otherwise
 
 //---- Helper function definitions ----//
 
 // Applies a mathematical operator to two operands
 void compute(LinkedStack<double>& vals, LinkedStack<char>& ops, string& errorMsg, bool& errorFlag) {
-    double operand1 = 0.0;  // Stores the 1st operand
-    double operand2 = 0.0;  // Stores the 2nd operand
-    char operation = '\0';  // Stores the next operator from the operator stack
+    double operand1 = 0.0;  // 1st operand from values stack 
+    double operand2 = 0.0;  // 2nd operand from values stack 
+    char operation = '\0';  // Operator from operators stack
 
     // Get operator from operators stack
     ops.getTop(operation);
@@ -71,7 +69,7 @@ void compute(LinkedStack<double>& vals, LinkedStack<char>& ops, string& errorMsg
         errorMsg = "Something went wrong. ";
         errorMsg += ((operation == '\0') ? "Did not fetch item from operator stack." : "Fetched invalid item from operator stack.");
     }
-    // Push the result
+    // Push result onto values stack
     vals.push(operand1);
     return;
 }
@@ -85,7 +83,7 @@ void displayAbout() {
         << "    1. Valid operators: ( ) * / + -\n"
         << "    2. Only interger numbers and valid digits (0-9).\n"
         << "    3. Negative numbers are allowed and must be in parentheses when necessary.\n"
-        << "    4. Multiplication by parentheses is allowed.\n"
+        << "    4. Multiplication with parentheses is allowed.\n"
         << "    5. Blank spaces will be skipped over and ignored.\n"
         << "    6. Excluding characters already mentioned, no invalid characters.\n"
         << "    7. No invalid parentheses and/or parentheses sequencing.\n"
@@ -112,20 +110,12 @@ void displayMenu(int& choice) {
 
 // Evaluates a given mathematical expression using two stacks
 double evaluateExpr(LinkedStack<double>& values, LinkedStack<char>& operators, bool& errorFlag) {
-    string digits = "";         // Stores the digits in multi-digit integers
-    string errorMsg = "";       // Stores the relevant error message
-    double result = 0.0;        // Stores the result of the expression
-    char current = '\0';        // Stores the current character in the expression
-    char temp = '\0';           // Used when checking for missed operators
+    string digits = "";         // Stores digits in multi-digit integers
+    string errorMsg = "";       // Stores the error message
+    double result = 0.0;        // Result of the expression
+    char current = '\0';        // Current character in the expression
+    char temp = '\0';           // Temporary variable used for comparisons 
     bool negationFlag = false;  // Boolean flag for when negation is required
-
-    // Boolean flags for errors
-    // bool divisionByZero = false;      // Division by zero
-    // bool invalidCharacters = false;   // Invalid characters
-    // bool invalidParentheses = false;  // Invalid parentheses
-    // bool invalidOperator = false;     // Invalid operator(s)
-    // bool missedNumber = false;        // Missed numbers
-    // bool missedOperator = false;      // Missed operators
 
     // Get and validate first character
     cin >> current;
@@ -143,47 +133,85 @@ double evaluateExpr(LinkedStack<double>& values, LinkedStack<char>& operators, b
         }
         if (isOperator(current)) {
             errorFlag = true;
-            errorMsg = "Invalid operator found.";
+            errorMsg = "Invalid operator sequencing.";
         }
     }
     // Process the rest of the expression
-    /*
-    3. While there are still characters to read in the expression (using cin):
-        1. Get next character.
-        2. If new character is:
-            1. A digit:
-                1. Add the character to the digits string.
-                2. While next character is a digit (using cin):
-                    1. Get next character.
-                    2. Append new character to the digits string.
-                3. Put the current character back onto the front of the input stream.
-                4. Convert the digits string to type double.
-                5. Push the new value onto values stack.
-                6. While next character is a blank space: Ignore and discard.
-                7. If next character is a left parentheses: Add '*' to the front of the input stream.
-            2. A left parentheses '(':
-                1. Push it onto operators stack.
-                2. While next character is a blank space: Ignore and discard.
-                3. If next character is a minus sign: Set negation flag to true.
-                4. If next character is a right parentheses: Throw error for invalid parentheses.
-            3. A right parentheses ')':
-                1. While top of operators stack is not a left parentheses:
-                    1. compute(ops, vals);
-                2. Pop left parentheses from operators stack.
-                3. While next character is a blank space: Ignore and discard.
-                4. If next character is a left parentheses or a digit: Add '*' to the front of the input stream.
-            4. An operator:
-                1. While operators stack not empty and top of operators stack has >= precedence:
-                    1. compute(ops, vals);
-                2. If character is a minus sign and negation flag is set to true:
-                    1. Push -1.0 onto values stack.
-                    2. Change character to a multiplication sign.
-                    3. Set negation flag to false.
-                3. Push character onto operators stack.
-                4. While next character is a blank space: Ignore and discard.
-                5. If next character is an operator (+, -, *, /) or right parentheses: Throw error for invalid operator sequencing.
-            5. Anything else: Throw error for invalid character.
-    */
+    while ((cin >> current) && (!errorFlag)) {
+        if (isdigit(current)) {
+            digits += current;
+
+            // Get any remaining digits and push number onto values stack
+            while ((cin >> current) && isdigit(current)) digits += current;
+            
+            cin.putback(current);
+            values.push(stod(digits));
+
+            // Remove spaces and check for parentheses multiplication
+            while (isspace(cin.peek())) cin.ignore();
+            if (cin.peek() == '(') cin.putback('*');
+        }
+        else if (current == '(') {
+            // Push onto operators stack and remove spaces
+            operators.push(current);
+            while (isspace(cin.peek())) cin.ignore();
+
+            // Check for negation and invalid parentheses
+            temp = cin.peek();
+
+            if (temp == '-') {
+                negationFlag = true;
+            }
+            else if (temp == ')') {
+                errorFlag = true;
+                errorMsg = "Invalid parentheses found.";
+            }
+        }
+        else if (current == ')') {
+            // Compute until left parentheses is found
+            operators.getTop(temp);
+
+            while (temp != '(') {
+                compute(values, operators, errorMsg, errorFlag);
+                operators.getTop(temp);
+            }
+            // Remove spaces and check for parentheses multiplication
+            while (isspace(cin.peek())) cin.ignore();
+
+            temp = cin.peek();
+            if ((temp == '(') || isdigit(temp)) cin.putback('*');
+        }
+        else if (isOperator(current)) {
+            // Compute until operators stack is empty or next operator has greater or equal precedence
+            operators.getTop(temp);
+
+            while ((!operators.isEmpty()) && (getPrecedence(temp) >= getPrecedence(current))) {
+                compute(values, operators, errorMsg, errorFlag);
+                operators.getTop(temp);
+            }
+            // Handle negation
+            if ((current == '-') && negationFlag) {
+                values.push(-1.0);
+                current = '*';
+                negationFlag = false;
+            }
+            // Push onto operators stack
+            operators.push(current);
+
+            // Remove spaces and check for invalid operator sequencing
+            while (isspace(cin.peek())) cin.ignore();
+
+            temp = cin.peek();
+            if (isOperator(temp) || (temp == ')')) {
+                errorFlag = true;
+                errorMsg = "Invalid operator sequencing.";
+            }
+        }
+        else {
+            errorFlag = true;
+            errorMsg = "Invalid character found.";
+        }
+    }
     // Finish rest of the expression
     if (!errorFlag) {
         while (!operators.isEmpty()) compute(values, operators, errorMsg, errorFlag);
@@ -213,16 +241,21 @@ double evaluateExpr(LinkedStack<double>& values, LinkedStack<char>& operators, b
 }
 
 // Returns a given operator's precedence
-int getPrecedence(char);
+int getPrecedence(char op) {
+    int precedence = 0;  // Precedence of given operator
 
-// Handles necessary negation when the current character is a minus sign
-void handleNegation();
+    if ((op == '*') || (op == '/')) precedence = 2;
+    else if ((op == '+') || (op == '-')) precedence = 1;
+    return precedence;
+}
 
 // Returns true if a given character is an arithmetic operator, false otherwise
-bool isOperator(char);
+bool isOperator(char op) {
+    bool check = false;  // Boolean flag for whether given character is an operator or not
 
-// Reads and discards continuous blank spaces
-void trimSpaces();
+    if ((op == '*') || (op == '/') || (op == '+') || (op == '-')) check = true;
+    return check;
+}
 
 //---- Main program ----//
 int main() {

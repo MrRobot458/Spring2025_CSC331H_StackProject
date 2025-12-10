@@ -102,6 +102,7 @@ template <typename T>
 void LinkedStack<T>::pop() {
     if (!isEmpty()) {
         Node<T>* trash = top;  // Pointer to the node getting deleted
+
         top = top->next;
         delete trash;
     }
