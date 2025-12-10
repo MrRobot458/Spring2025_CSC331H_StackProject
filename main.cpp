@@ -1,14 +1,14 @@
 /*
 Purpose:
-    This is a menu-driven program that prompts a user for a valid mathematical expression, evaluates it using two
+    This is a menu-driven program that prompts a user for a mathematical expression, evaluates it using two
     linked-list-implemented stacks, and displays the result. One stack is for operands, the other for operators.
 
 Input:
-    1. The user's choice from the program's menu options.
-    2. A valid mathematical expression.
+    1. The user's choice from the menu options.
+    2. A mathematical expression.
 
 Output:
-    1. The evaluated result of the mathematical expression provided by the user.
+    1. The result of the mathematical expression provided by the user.
     2. Menu of options and the results of the operation selected by the user.
 */
 
@@ -16,6 +16,7 @@ Output:
 #include <iostream>
 #include <string>
 #include <limits>
+#include <iomanip>
 
 using namespace std;
 
@@ -83,7 +84,7 @@ void displayAbout() {
         << "    1. Valid operators: ( ) * / + -\n"
         << "    2. Only interger numbers and valid digits (0-9).\n"
         << "    3. Negative numbers are allowed and must be in parentheses when necessary.\n"
-        << "    4. Multiplication with parentheses is allowed.\n"
+        << "    4. Implicit multiplication (multiplication with parentheses) is allowed.\n"
         << "    5. Blank spaces will be skipped over and ignored.\n"
         << "    6. Excluding characters already mentioned, no invalid characters.\n"
         << "    7. No invalid parentheses and/or parentheses sequencing.\n"
@@ -147,7 +148,7 @@ double evaluateExpr(LinkedStack<double>& values, LinkedStack<char>& operators, b
             cin.putback(current);
             values.push(stod(digits));
 
-            // Remove spaces and check for parentheses multiplication
+            // Remove spaces and check for implicit multiplication
             while (isspace(cin.peek())) cin.ignore();
             if (cin.peek() == '(') cin.putback('*');
         }
@@ -175,7 +176,7 @@ double evaluateExpr(LinkedStack<double>& values, LinkedStack<char>& operators, b
                 compute(values, operators, errorMsg, errorFlag);
                 operators.getTop(temp);
             }
-            // Remove spaces and check for parentheses multiplication
+            // Remove spaces and check for implicit multiplication
             while (isspace(cin.peek())) cin.ignore();
 
             temp = cin.peek();
@@ -259,12 +260,13 @@ bool isOperator(char op) {
 
 //---- Main program ----//
 int main() {
-    LinkedStack<double> valueStack;   // Stores the operands of a mathematical expression
-    LinkedStack<char> operatorStack;  // Stores the operators of a mathematical expression 
-    double result = 0.0;              // Stores the result of a mathematical expression 
-    int input = 0;                    // Stores the user's input
-    bool hasError = false;            // Boolean flag for when the expression has an error
+    LinkedStack<double> valueStack;   // Stack for expression operands
+    LinkedStack<char> operatorStack;  // Stack for expression operators
+    double result = 0.0;              // Stores result of expression 
+    int input = 0;                    // Stores user input
+    bool hasError = false;            // Boolean flag for when expression has an error
 
+    cout << fixed << setprecision(3);
     cout << "Hi!";
     displayAbout();
 
@@ -274,18 +276,17 @@ int main() {
     // Do the requested operation until user quits
     while (input != 3) {
         if (input == 1) {
-            // Empty the stacks
-            while (!valueStack.isEmpty()) valueStack.pop();
-            while (!operatorStack.isEmpty()) operatorStack.pop();
-            
             cout << "\nEnter mathematical expression below.\n\n" << "---> ";
 
-            // Evaluate mathematical expression and display result
+            // Evaluate expression and display result
             result = evaluateExpr(valueStack, operatorStack, hasError);
 
             if (!hasError) cout << "\n\nResult: " << result << "\n";
 
-            // Reset
+            // Reset the stacks and result
+            while (!valueStack.isEmpty()) valueStack.pop();
+            while (!operatorStack.isEmpty()) operatorStack.pop();
+
             result = 0.0;
 
             // Clear the input buffer
