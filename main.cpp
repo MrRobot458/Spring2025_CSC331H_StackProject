@@ -112,9 +112,6 @@ void displayMenu(int& choice) {
 
 // Evaluates a given mathematical expression using two stacks
 double evaluateExpr(LinkedStack<double>& values, LinkedStack<char>& operators, bool& errorFlag) {
-    // FLAG 10
-    std::cout << "\nFLAG 10: entered evaluateExpr()\n";
-
     std::string digits = "";    // Stores digits in multi-digit integers
     std::string errorMsg = "";  // Stores the error message
     double result = 0.0;        // Result of the expression
@@ -122,14 +119,8 @@ double evaluateExpr(LinkedStack<double>& values, LinkedStack<char>& operators, b
     char temp = '\0';           // Temporary variable used for comparisons 
     bool negationFlag = false;  // Boolean flag for when negation is required
 
-    // FLAG 11
-    std::cout << "\nFLAG 11: evaluateExpr() data loaded. getting first input\n";
-
     // Get and validate first character
     std::cin.get(current);
-
-    // FLAG 12
-    std::cout << "\nFLAG 12: got first input. Validating\n";
 
     if (current == '-') {
         negationFlag = true;
@@ -146,74 +137,30 @@ double evaluateExpr(LinkedStack<double>& values, LinkedStack<char>& operators, b
         errorFlag = true;
         errorMsg = "Invalid operator sequencing.";
     }
-
-    // FLAG 13
-    std::cout << "\nFLAG 13: Validated first input. Putting char back\n";
-
     // Put character back to begin evaluation
     std::cin.putback(current);
 
-    // FLAG 14
-    std::cout << "\nFLAG 14: Char back in input buffer\n";
-
     // Process the expression
     while (std::cin.get(current) && (current != '\n') && (!errorFlag)) {
-        // FLAG 15
-        std::cout << "\nFLAG 15: entered evaluation process loop. Checking current char\n";
-        
         if (isspace(current)) {
-            // FLAG 16
-            std::cout << "\nFLAG 16: char is blank space\n";
             continue;
         }
         else if (isdigit(current)) {
-            // FLAG 17 
-            std::cout << "\nFLAG 17: char is digit. Adding char to digit string\n";
-
             digits += current;
-
-            // FLAG 17_1
-            std::cout << "\nFLAG 17_1: char added to digit string. Adding more digits\n";
 
             // Get any remaining digits and push number onto values stack
             while (std::cin.get(current) && (isdigit(current) || current == ' ')) {
                 if (isdigit(current)) digits += current;
             }
-
-            // FLAG 17_2
-            std::cout << "\nFLAG 17_2: added digits. putting current char back\n";
-
             std::cin.putback(current);
-
-            // FLAG 17_3
-            std::cout << "\nFLAG 17_3: char in input buffer. Pushing digits string to values stack\n";
-
             values.push(stod(digits));
-
-            // FLAG 17_4
-            std::cout << "\nFLAG 17_4: digits pushed. Resetting digits string\n";
 
             // Reset for next number
             digits = "";
 
-            // FLAG 17_5
-            std::cout << "\nFLAG 17_5: reset complete. Skipping spaces\n";
-
-            // Remove spaces and check for implicit multiplication
-            // while (std::cin.peek() == ' ') std::cin.ignore();
-
-            // FLAG 17_6
-            std::cout << "\nFLAG 17_6: skipped spaces. Checking next char\n";
-
             if (std::cin.peek() == '(') std::cin.putback('*');
-
-            // FLAG 17_7
-            std::cout << "\nFLAG 17_7: done with digit check\n";
         }
         else if (current == '(') {
-            // FLAG 18
-            std::cout << "\nFLAG 18: char is left parentheses (\n";
-
             // Push onto operators stack and remove spaces
             operators.push(current);
 
@@ -231,9 +178,6 @@ double evaluateExpr(LinkedStack<double>& values, LinkedStack<char>& operators, b
             }
         }
         else if (current == ')') {
-            // FLAG 19
-            std::cout << "\nFLAG 19: char is right parentheses )\n";
-
             if (!operators.isEmpty()) {
                 // Compute until left parentheses is found
                 operators.getTop(temp);
@@ -264,9 +208,6 @@ double evaluateExpr(LinkedStack<double>& values, LinkedStack<char>& operators, b
             if ((temp == '(') || isdigit(temp)) std::cin.putback('*');
         }
         else if (isOperator(current)) {
-            // FLAG 20
-            std::cout << "\nFLAG 20: char is operator\n";
-
             // Compute until operators stack is empty or next operator has greater or equal precedence
             operators.getTop(temp);
 
@@ -296,9 +237,6 @@ double evaluateExpr(LinkedStack<double>& values, LinkedStack<char>& operators, b
             }
         }
         else {
-            // FLAG 21
-            std::cout << "\nFLAG 21: char is invalid. Setting error\n";
-
             errorFlag = true;
             errorMsg = "Invalid character found.";
         }
@@ -348,82 +286,42 @@ bool isOperator(char op) {
 
 //---- Main program ----//
 int main() {
-    // FLAG 1
-    std::cout << "\nFLAG 1: entered main\n";
-
     LinkedStack<double> valueStack;   // Stack for expression operands
     LinkedStack<char> operatorStack;  // Stack for expression operators
     double result = 0.0;              // Stores result of expression 
     int input = 0;                    // Stores user input
     bool hasError = false;            // Boolean flag for when expression has an error
 
-    // FLAG 2
-    std::cout << "\nFLAG 2: data loaded. Welcome message\n";
-
-    std::cout << std::fixed << std::setprecision(3);
+    // Set output stream and display welcome message
+    std::cout << std::fixed << std::setprecision(2);
     std::cout << "Hi!";
     displayAbout();
-
-    // FLAG 3
-    std::cout << "\nFLAG 3: getting first input. Displaying menu\n";
 
     // Get user's first choice
     displayMenu(input);
 
-    // FLAG 4
-    std::cout << "\nFLAG 4: Got first input. \n";
-
     // Do the requested operation until user quits
     while (input != 3) {
-        // FLAG 5
-        std::cout << "\nFLAG 5: inside main while loop\n";
-
         if (input == 1) {
-            // FLAG 6
-            std::cout << "\nFLAG 6: evaluate expression selected\n";
-
             // Reset the stacks
-
-            // FLAG 7
-            std::cout << "\nFLAG 7: emptying values stack\n";
-
             while (!valueStack.isEmpty()) valueStack.pop();
-
-            // FLAG 8
-            std::cout << "\nFLAG 8: emptying operators stack\n";
-
             while (!operatorStack.isEmpty()) operatorStack.pop();
 
             // Reset error flag and result
             result = 0.0;
             hasError = false;
 
-            // FLAG 9
-            std::cout << "\nFLAG 9: ready to evaluate\n";
-
             // Evaluate expression and display result
             std::cout << "\nEnter mathematical expression below.\n\n" << "---> ";
             result = evaluateExpr(valueStack, operatorStack, hasError);
 
-            // FLAG 22
-            std::cout << "\nFLAG 22: finished evaluating. Printing result\n";
-
             if (!hasError) std::cout << "\n\nResult: " << result << "\n";
-
-            // FLAG 23
-            std::cout << "\nFLAG 23: printed result. clearing input buffer\n";
 
             // Clear the input buffer
             std::cin.clear();
 
-            // FLAG 24
-            std::cout << "\nFLAG 24: buffer cleared. Ignoring now\n";
-
             std::cout << "\nPress 'Enter' to continue...\n";
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
-            // FLAG 25
-            std::cout << "\nFLAG 25: buffer ignored. Done with evalution option\n";
         }
         else if (input == 2) displayAbout();
         else std::cout << "\nError: Invalid choice. Choose a number from the menu below and try again.\n";
