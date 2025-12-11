@@ -18,20 +18,20 @@ Output:
 #include <limits>
 #include <iomanip>
 
-// using namespace std;
+using namespace std;
 
 //---- Helper function prototypes ----//
-void compute(LinkedStack<double>&, LinkedStack<char>&, std::string&, bool&);  // Applies a mathematical operator to two operands
-void displayAbout();                                                          // Displays the program's details
-void displayMenu(int&);                                                       // Displays the menu and gets the user's choice
-double evaluateExpr(LinkedStack<double>&, LinkedStack<char>&, bool&);         // Evaluates a given mathematical expression using two stacks
-int getPrecedence(char);                                                      // Returns a given operator's precedence
-bool isOperator(char);                                                        // Returns true if a given character is an arithmetic operator, false otherwise
+void compute(LinkedStack<double>&, LinkedStack<char>&, string&, bool&);  // Applies a mathematical operator to two operands
+void displayAbout();                                                     // Displays the program's details
+void displayMenu(int&);                                                  // Displays the menu and gets the user's choice
+double evaluateExpr(LinkedStack<double>&, LinkedStack<char>&, bool&);    // Evaluates a given mathematical expression using two stacks
+int getPrecedence(char);                                                 // Returns a given operator's precedence
+bool isOperator(char);                                                   // Returns true if a given character is an arithmetic operator, false otherwise
 
 //---- Helper function definitions ----//
 
 // Applies a mathematical operator to two operands
-void compute(LinkedStack<double>& vals, LinkedStack<char>& ops, std::string& errorMsg, bool& errorFlag) {
+void compute(LinkedStack<double>& vals, LinkedStack<char>& ops, string& errorMsg, bool& errorFlag) {
     double operand1 = 0.0;  // 1st operand from values stack 
     double operand2 = 0.0;  // 2nd operand from values stack 
     char operation = '\0';  // Operator from operators stack
@@ -77,7 +77,7 @@ void compute(LinkedStack<double>& vals, LinkedStack<char>& ops, std::string& err
 
 // Displays the program's details
 void displayAbout() {
-    std::cout << "\nThis program takes as input a mathematical expression and displays the result to 3 decimal places.\n"
+    cout << "\nThis program takes as input a mathematical expression and displays the result with 2 decimal places.\n"
         << "The expression is evaluated using two linked-list-implemented stacks. One stack for operands, the other for operators.\n"
         << "The expression must be valid. Any error will bring you back to the main menu.\n"
         << "A valid mathematical expression has the following:\n"
@@ -95,32 +95,32 @@ void displayAbout() {
 
 // Displays the menu and gets the user's choice
 void displayMenu(int& choice) {
-    std::cout << "\n****************** MENU ******************\n"
+    cout << "\n****************** MENU ******************\n"
         << "  1. Evaluate a mathematical expression.\n"
         << "  2. About.\n"
         << "  3. Quit the program.\n"
         << "******************************************\n";
 
-    std::cout << "\nPick a number. Enter your choice here: ";
-    std::cin >> choice;
+    cout << "\nPick a number. Enter your choice here: ";
+    cin >> choice;
 
     // Clear the input buffer
-    std::cin.clear();
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    cin.clear();
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
     return;
 }
 
 // Evaluates a given mathematical expression using two stacks
 double evaluateExpr(LinkedStack<double>& values, LinkedStack<char>& operators, bool& errorFlag) {
-    std::string digits = "";    // Stores digits in multi-digit integers
-    std::string errorMsg = "";  // Stores the error message
+    string digits = "";         // Stores digits in multi-digit integers
+    string errorMsg = "";       // Stores the error message
     double result = 0.0;        // Result of the expression
     char current = '\0';        // Current character in the expression
     char temp = '\0';           // Temporary variable used for comparisons 
     bool negationFlag = false;  // Boolean flag for when negation is required
 
     // Get and validate first character
-    std::cin.get(current);
+    cin.get(current);
 
     if (current == '-') {
         negationFlag = true;
@@ -138,10 +138,10 @@ double evaluateExpr(LinkedStack<double>& values, LinkedStack<char>& operators, b
         errorMsg = "Invalid operator sequencing.";
     }
     // Put character back to begin evaluation
-    std::cin.putback(current);
+    cin.putback(current);
 
     // Process the expression
-    while (std::cin.get(current) && (current != '\n') && (!errorFlag)) {
+    while (cin.get(current) && (current != '\n') && (!errorFlag)) {
         if (isspace(current)) {
             continue;
         }
@@ -149,25 +149,25 @@ double evaluateExpr(LinkedStack<double>& values, LinkedStack<char>& operators, b
             digits += current;
 
             // Get any remaining digits and push number onto values stack
-            while (std::cin.get(current) && (isdigit(current) || current == ' ')) {
+            while (cin.get(current) && (isdigit(current) || current == ' ')) {
                 if (isdigit(current)) digits += current;
             }
-            std::cin.putback(current);
+            cin.putback(current);
             values.push(stod(digits));
 
             // Reset for next number
             digits = "";
 
-            if (std::cin.peek() == '(') std::cin.putback('*');
+            if (cin.peek() == '(') cin.putback('*');
         }
         else if (current == '(') {
             // Push onto operators stack and remove spaces
             operators.push(current);
 
-            while (std::cin.peek() == ' ') std::cin.ignore();
+            while (cin.peek() == ' ') cin.ignore();
 
             // Check for negation and invalid parentheses
-            temp = char(std::cin.peek());
+            temp = char(cin.peek());
 
             if (temp == '-') {
                 negationFlag = true;
@@ -202,10 +202,10 @@ double evaluateExpr(LinkedStack<double>& values, LinkedStack<char>& operators, b
                 errorMsg = "Invalid parentheses found.";
             }
             // Remove spaces and check for implicit multiplication
-            while (std::cin.peek() == ' ') std::cin.ignore();
-            temp = char(std::cin.peek());
+            while (cin.peek() == ' ') cin.ignore();
+            temp = char(cin.peek());
 
-            if ((temp == '(') || isdigit(temp)) std::cin.putback('*');
+            if ((temp == '(') || isdigit(temp)) cin.putback('*');
         }
         else if (isOperator(current)) {
             // Compute until operators stack is empty or next operator has greater or equal precedence
@@ -218,7 +218,7 @@ double evaluateExpr(LinkedStack<double>& values, LinkedStack<char>& operators, b
             // Handle negation
             if ((current == '-') && negationFlag) {
                 // Check for 0
-                if (std::cin.peek() != '0') values.push(-1.0);
+                if (cin.peek() != '0') values.push(-1.0);
                 else values.push(0.0);
 
                 current = '*';
@@ -228,8 +228,8 @@ double evaluateExpr(LinkedStack<double>& values, LinkedStack<char>& operators, b
             operators.push(current);
 
             // Remove spaces and check for invalid operator sequencing
-            while (std::cin.peek() == ' ') std::cin.ignore();
-            temp = char(std::cin.peek());
+            while (cin.peek() == ' ') cin.ignore();
+            temp = char(cin.peek());
 
             if (isOperator(temp) || (temp == ')')) {
                 errorFlag = true;
@@ -263,7 +263,7 @@ double evaluateExpr(LinkedStack<double>& values, LinkedStack<char>& operators, b
         errorMsg = ((temp == ')') ? "Invalid parentheses found." : "Something went wrong. Missed operator(s) left in operators stack.");
     }
     // If there's an error, display error message
-    if (errorFlag) std::cout << "\n\nError: " << errorMsg << "\n";
+    if (errorFlag) cout << "\n\nError: " << errorMsg << "\n";
     return result;
 }
 
@@ -293,8 +293,8 @@ int main() {
     bool hasError = false;            // Boolean flag for when expression has an error
 
     // Set output stream and display welcome message
-    std::cout << std::fixed << std::setprecision(2);
-    std::cout << "Hi!";
+    cout << fixed << setprecision(2);
+    cout << "Hi!";
     displayAbout();
 
     // Get user's first choice
@@ -312,23 +312,23 @@ int main() {
             hasError = false;
 
             // Evaluate expression and display result
-            std::cout << "\nEnter mathematical expression below.\n\n" << "---> ";
+            cout << "\nEnter mathematical expression below.\n\n" << "---> ";
             result = evaluateExpr(valueStack, operatorStack, hasError);
 
-            if (!hasError) std::cout << "\n\nResult: " << result << "\n";
+            if (!hasError) cout << "\n\nResult: " << result << "\n";
 
             // Clear the input buffer
-            std::cin.clear();
+            cin.clear();
 
-            std::cout << "\nPress 'Enter' to continue...\n";
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            cout << "\nPress 'Enter' to continue...\n";
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
         }
         else if (input == 2) displayAbout();
-        else std::cout << "\nError: Invalid choice. Choose a number from the menu below and try again.\n";
+        else cout << "\nError: Invalid choice. Choose a number from the menu below and try again.\n";
 
         // Get user's next choice
         displayMenu(input);
     }
-    std::cout << "\nExiting program. Bye!\n";
+    cout << "\nExiting program. Bye!\n";
     return 0;
 }
