@@ -1,9 +1,9 @@
 /*
-Purpose:
-    This is the implementaion file for a Linked List implementation of a Stack class. The C++ language standard is C++20.
-
-Input: None.
-Output: None.
+* Purpose:
+*     This is the implementaion file for a Linked List implementation of a Stack class. The C++ language standard is C++20.
+*
+* Input: None.
+* Output: None.
 */
 
 #include "LinkedStack.h"

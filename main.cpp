@@ -1,15 +1,15 @@
 /*
-Purpose:
-    This is a menu-driven program that prompts a user for a mathematical expression, evaluates it using two
-    linked-list-implemented stacks, and displays the result. One stack is for operands, the other for operators.
-
-Input:
-    1. The user's choice from the menu options.
-    2. A mathematical expression.
-
-Output:
-    1. The result of the mathematical expression provided by the user.
-    2. Menu of options and the results of the operation selected by the user.
+* Purpose:
+*     This is a menu-driven program that prompts a user for a mathematical expression, evaluates it using two
+*     linked-list-implemented stacks, and displays the result. One stack is for operands, the other for operators.
+* 
+* Input:
+*     1. The user's choice from the menu options.
+*     2. A mathematical expression.
+* 
+* Output:
+*     1. The result of the mathematical expression provided by the user.
+*     2. Menu of options and the results of the operation selected by the user.
 */
 
 #include "LinkedStack.h"
