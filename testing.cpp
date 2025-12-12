@@ -1,11 +1,12 @@
 /*
-Purpose: Test case file for StackProject. 
-
-    PASS = successful evaluation of expression
-    FAIL = failed evaluation of expression
-
-Input: None
-Output: None
+* Purpose:
+*     Test case file for Stack project.
+* 
+*     PASS = successful evaluation of expression
+*     FAIL = failed evaluation of expression
+* 
+* Input: None.
+* Output: None.
 */
 
 //---- Main menu test cases ----//
